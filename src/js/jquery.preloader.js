@@ -49,14 +49,9 @@
 
             if (options.percent.length > 0 && $percent) {
                 $percent.text(options.percent + '%');
-            } else if (!$percent) {
-                console.warn('Значение не может быть обновлено');
-                return false;
-            }
-
-            if (options.text.length > 0 && $text) {
+            } else if (options.text.length > 0 && $text) {
                 $text.text(options.text);
-            } else if (!$text) {
+            } else if (!$text || !$percent) {
                 console.warn('Значение не может быть обновлено');
                 return false;
             }
@@ -100,6 +95,8 @@
                 $animationBlock.css({'top': animPosition});
             }
         }
+        
+        isInited = true;
 
         // text option
         if (this.options.text.length > 0) {
@@ -125,10 +122,9 @@
         if (this.options.duration.length > 0) {
             setTimeout(function () {
                 $preloaderContainer.remove();
+                isInited = false;
             }, this.options.duration);
         }
-
-        isInited = true;
     };
 
     $.fn[pluginName] = function (method, options) {

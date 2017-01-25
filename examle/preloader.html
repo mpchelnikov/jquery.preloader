@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>jquery.preloader Demopage</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css"/>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="../src/css/preloader.css"/>
+    <script src="http://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="../src/js/jquery.preloader.min.js"></script>
+    <style>
+        html, body {
+            background: #f0f0f0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        button {
+            cursor: pointer;
+            margin: .5em;
+        }
+
+        #apply {
+            margin: -.25em 0 0 0;
+        }
+
+        .someBlock {
+            background: #fff no-repeat 50% 50%;
+            background-image: url('image.png'), url('http://wm.mf-image.ru/d/eyJ0IjoiMjAxNy0wMS0yNVQyMToyNzoyMi44ODIyNDQ1WiIsInRtIjoxNSwiYmQiOjEsImZkIjo0MDkzMzQ2LCJzbCI6MCwiZm4iOm51bGwsInIiOiJodHRwOi8vbXktZmlsZXMucnUvNml2bnZkIiwibCI6bnVsbH0,.F724D389EB041981B0A60C7A15FA3F69./image.png');
+            background-size: contain;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+            height: 50vh;
+            margin: 5vh auto;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+<div class="row align-items-center">
+    <h1 class="display-1 col-12 text-center">jquery.preloader</h1>
+    <div class="col-8 align-self-center someBlock"></div>
+    <div class="offset-sm-4 col-4 text-center">
+        <button class="btn btn-outline-success" id="start">Start</button>
+        <button class="btn btn-outline-danger" id="stop">Stop</button>
+    </div>
+    <div class="col-12 text-center">
+        <label>
+            <span class="input-group">
+                <span class="input-group-addon">text:</span>
+                <input type="text" class="form-control" placeholder="type & apply" id="textInput">
+            </span>
+        </label>
+        <label>
+            <span class="input-group">
+                <span class="input-group-addon">percent:</span>
+                <input type="number" min="0" max="100" class="form-control" id="percentInput">
+            </span>
+        </label>
+        <label>
+            <span class="input-group">
+                <span class="input-group-addon">duration:</span>
+                <input type="number" min="0" step="50" class="form-control" placeholder="in ms" id="durationInput">
+            </span>
+        </label>
+        <button class="btn btn-outline-info" id="apply">Update</button>
+    </div>
+
+</div>
+<script>
+    var     obj = {},
+            someBlock = $('.someBlock');
+
+    function getValues() {
+        obj.textVal = $('#textInput').val();
+        obj.percentVal = $('#percentInput').val();
+        obj.durationVal = $('#durationInput').val();
+    }
+
+    $('#start').on('click', function () {
+        getValues();
+        someBlock.preloader({
+            text: obj.textVal,
+            percent: obj.percentVal,
+            duration: obj.durationVal
+        });
+        $('.form-control').each(function(k,v) {
+            if (v.value.length == 0) $(v).attr('disabled', true);
+        });
+    });
+    $('#stop').on('click', function () {
+        someBlock.preloader('remove');
+        $('.form-control').attr('disabled', false);
+    });
+    $('#apply').on('click', function () {
+        getValues();
+        someBlock.preloader('update', {
+            text: obj.textVal,
+            percent: obj.percentVal,
+            duration: obj.durationVal
+        });
+    });
+</script>
+</body>
+</html>
