@@ -14,13 +14,26 @@ $green:     #62cb31;
   min-height: 100%;
   z-index: 1;
   opacity: .8;
+  &.full-preloader {
+    position: fixed;
+    z-index: 2000;
 
-  &-animation {
+    .preloader-animation {
+      position: absolute;
+      top: calc(50% - 3.25em);
+      left: calc(50% - 3.25em);
+    }
+  }
+  &-container {
     position: absolute;
+    top: calc(50% - 3.25em);
+    text-align: center;
+    width: 100%;
+  }
+  &-animation {
+    display: inline-block;
     height: 6.5em;
     width: 6.5em;
-    top: calc(50% - 3.25em);
-    left: calc(50% - 3.25em);
     border-radius: 50%;
     border: 3px solid transparent;
     border-top-color: $orange;

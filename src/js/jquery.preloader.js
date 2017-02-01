@@ -4,7 +4,9 @@
  * Опции (по-умолчанию пустые, тип - String):
  *      text - будет указан поясняющий текст над анимацией;
  *      percent - процент выполнения, можно указывать от 0 до 100;
- *      duration - продолжительность прелоадера
+ *      duration - продолжительность прелоадера;
+ *      zIndex - устанавливает z-index контейнера .preloader;
+ *      setRelative - устанавливает position: relative на родительский блок прелоадера, bool
  * Пример: $('.el').preloader({text: 'example'});
  *
  * Методы:
@@ -17,9 +19,11 @@
         defaults = {
             text: '', // explaining text under animation
             percent: '', // from 0 to 100
-            duration: '' // in ms
+            duration: '', // in ms
+            zIndex: '', // setting z-index rule to .preloader
+            setRelative: false // setting relative position to preloader's parent
         },
-        $preloaderContainer,
+        $preloader,
         $animationBlock,
         $text,
         $percent,
@@ -39,9 +43,9 @@
 
     var methods = {
         remove: function () {
-            if ($preloaderContainer) {
+            if ($preloader) {
                 isInited = false;
-                $preloaderContainer.remove();
+                $preloader.remove();
             }
         },
         update: function (arg) {
@@ -49,9 +53,14 @@
 
             if (options.percent.length > 0 && $percent) {
                 $percent.text(options.percent + '%');
-            } else if (options.text.length > 0 && $text) {
+            } else if (!$percent) {
+                console.warn('Значение не может быть обновлено');
+                return false;
+            }
+
+            if (options.text.length > 0 && $text) {
                 $text.text(options.text);
-            } else if (!$text || !$percent) {
+            } else if (!$text) {
                 console.warn('Значение не может быть обновлено');
                 return false;
             }
@@ -72,31 +81,30 @@
             return false;
         }
 
-        element.prepend('<div class="preloader"><div class="preloader-animation"></div></div>');
-        $preloaderContainer = element.find('.preloader');
-        $animationBlock = $preloaderContainer.find('.preloader-animation');
+        element.prepend('<div class="preloader"><div class="preloader-container"><div class="preloader-animation"></div></div></div>');
+        $preloader = element.find('.preloader');
+        $preloaderContainer = element.find('.preloader-container');
+        $animationBlock = $preloader.find('.preloader-animation');
 
         // Установка высоты прелоадера
         elementHeight = element.height();
         elementScrollHeight = element[0].scrollHeight;
-        preloaderHeight = $preloaderContainer.height();
+        preloaderHeight = $preloader.height();
 
         if (elementScrollHeight > preloaderHeight) {
-            $preloaderContainer.height(elementScrollHeight);
+            $preloader.height(elementScrollHeight);
 
             // Позиционирование анимации в центре
             element.on('scroll', fixAnimBlock).trigger('scroll');
             function fixAnimBlock () {
                 var scrollTop = element.scrollTop(),
-                    animPosition,
-                    animHeight = $animationBlock.height();
+                    preloaderPosition,
+                    preloaderHeight = $preloaderContainer.height();
 
-                animPosition = Math.round(elementHeight / 2 - animHeight / 2 + scrollTop) + 'px';
-                $animationBlock.css({'top': animPosition});
+                preloaderPosition = Math.round(elementHeight / 2 - preloaderHeight / 2 + scrollTop) + 'px';
+                $preloaderContainer.css({'top': preloaderPosition});
             }
         }
-        
-        isInited = true;
 
         // text option
         if (this.options.text.length > 0) {
@@ -121,10 +129,21 @@
         // duration option
         if (this.options.duration.length > 0) {
             setTimeout(function () {
-                $preloaderContainer.remove();
-                isInited = false;
+                $preloader.remove();
             }, this.options.duration);
         }
+
+        // zIndex option
+        if (this.options.zIndex.length > 0) {
+            $preloader.css('z-index', this.options.zIndex);
+        }
+
+        // setRelative option
+        if (this.options.setRelative == true) {
+            element.css('position', 'relative');
+        }
+
+        isInited = true;
     };
 
     $.fn[pluginName] = function (method, options) {
