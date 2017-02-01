@@ -1,4 +1,4 @@
-# jquery.preloader v1.0
+# jquery.preloader v1.0.1
 A small jQuery plug-in is designed for display loading animation when some process is running just by selecting any container.
 The plugin has the methods and options for easy controlling the displaying.
 
